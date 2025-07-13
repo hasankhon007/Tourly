@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tourly", "Tourly\Tourly.csproj", "{041955FF-C0E7-4085-BBE4-8DF83459FFC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{041955FF-C0E7-4085-BBE4-8DF83459FFC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{041955FF-C0E7-4085-BBE4-8DF83459FFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{041955FF-C0E7-4085-BBE4-8DF83459FFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{041955FF-C0E7-4085-BBE4-8DF83459FFC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F745DC1D-7CE0-4521-BB41-D6FC4F178D45}
+	EndGlobalSection
+EndGlobal
