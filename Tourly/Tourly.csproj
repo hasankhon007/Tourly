@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Services\UserServices\" />
     <Folder Include="Data\" />
-    <Folder Include="Constants\" />
+    <Folder Include="IServices\IUserServices\" />
   </ItemGroup>
 
 </Project>
