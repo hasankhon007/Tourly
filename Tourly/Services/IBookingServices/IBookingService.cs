@@ -1,5 +1,5 @@
-﻿using Tourly.BookingModels;
-using Tourly.Domain;
+﻿using Tourly.Domain;
+using Tourly.Models.BookingModels;
 namespace Tourly.IServices.IBookingServices;
 public interface IBookingService
 {

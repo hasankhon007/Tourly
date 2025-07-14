@@ -1,4 +1,4 @@
-﻿namespace Tourly.UserModels;
+﻿namespace Tourly.Models.UserModels;
 
 public class UserViewModel
 {
