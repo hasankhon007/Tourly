@@ -1,6 +1,6 @@
 ﻿using Tourly.Constants;
+using Tourly.Enums;
 using Tourly.Helpers;
-
 namespace Tourly.Domain;
 
 public class Hotel
@@ -14,12 +14,15 @@ public class Hotel
     public string Location { get; set; }
     public string Name { get; set; }
     public string PhoneNumber { get; set; }
+    public HotelStatus Status { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
     public byte StarsCount { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public override string ToString()
     {
-        return $"{ID},{Name},{Location},{PhoneNumber},{Description}, {Price}";
+        return $"{ID},{Name},{Price},{Location},{PhoneNumber},{Description},{StarsCount}";
     }
 }

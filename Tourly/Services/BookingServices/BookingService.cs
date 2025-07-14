@@ -1,22 +1,40 @@
-﻿using Tourly.BookingModels;
+﻿using Tourly.Constants;
 using Tourly.Domain;
-using Tourly.IServices.IBookingServices;
+using Tourly.Extentions;
+using Tourly.Helpers;
+using Tourly.Models.BookingModels;
+using Tourly.Services.IBookingServices;
+using Tourly.Services.UserServices;
 namespace Tourly.Services.BookingServices;
 public class BookingService : IBookingService
 {
+    private UserService userServices;
+    private HotelBookingModel hotelBookingModel;
+    private HotelModelView hotelModelView;
+    public BookingService(HotelBookingModel hotelBookingModel,HotelModelView hotelModelView , UserService userService)
+    {
+        this.hotelBookingModel = hotelBookingModel;
+        this.hotelModelView = hotelModelView;
+        this.userServices = userService;
+    }
+
     public void BookHotel(HotelBookingModel hotelBookingModel)
     {
-        throw new NotImplementedException();
+        string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+
+        List<Booking> bookings = text.ConvertTextToList();
+
+
     }
 
     public void CalculateTotalPrizeOfBooking(HotelBookingModel hotelBookingModel)
     {
-        throw new NotImplementedException();
+
     }
 
     public void CancelBooking(HotelBookingModel hotelBookingModel)
     {
-        throw new NotImplementedException();
+
     }
 
     public void ChangeBooking(HotelBookingModel hotelBookingModel)
@@ -38,9 +56,19 @@ public class BookingService : IBookingService
     {
         throw new NotImplementedException();
     }
-
-    public HotelModelView View(Guid hotelId)
+    // 
+    public HotelModelView View(int hotelId)
     {
-        throw new NotImplementedException();
+        string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+
+        List<Booking> convertedBookings = text.ConvertTextToList();
+
+        var existBooking = convertedBookings.Find(x => x.HotelId == hotelId);
+
+        if (existBooking == null)
+        {
+            throw new Exception("Booking is not found");
+        }
+        return existBooking.ToHotelViewModel();
     }
 }
