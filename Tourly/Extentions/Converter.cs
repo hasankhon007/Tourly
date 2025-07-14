@@ -81,9 +81,9 @@ public static class Converter
         };
     }
 
-    public static List<HotelModelView> ToHotelList(this string text)
+    public static List<Hotel> ToHotelList(this string text)
     {
-        List<HotelModelView> hotels = new List<HotelModelView>();
+        List<Hotel> hotels = new List<Hotel>();
 
         string[] lines = text.Split('\n');
 
@@ -95,12 +95,12 @@ public static class Converter
 
             hotels.Add(new Hotel
             {
-                Name = parts[1],
-                Description = parts[2],
-                Price = decimal.Parse(parts[3]),
-                 = (Enums.HotelStatus)Enum.Parse(typeof(Enums.HotelStatus), parts[4]),
-                StartDate = DateTime.Parse(parts[5]),
-                EndDate = DateTime.Parse(parts[6])
+                HotelName = parts[0],
+                HotelDescription = parts[1],
+                HotelPrice = decimal.Parse(parts[2]),
+                HotelStatus = (Enums.HotelStatus)Enum.Parse(typeof(Enums.HotelStatus), parts[3]),
+                StartDate = DateTime.Parse(parts[4]),
+                EndDate = DateTime.Parse(parts[5])
             });
         }
         return hotels;
