@@ -4,15 +4,13 @@ namespace Tourly.Extentions;
 
 public static class CollectionExtentions
 {
-    public static List<string> ConvertToString(this List<User> users)
+    public static List<string> Convert<T>(this List<T> list)
     {
-        var convertedUser = new List<string>();
-
-        foreach (var user in users)
+        var convertedList = new List<string>();
+        foreach (var item in list)
         {
-            convertedUser.Add(user.ToString());
+            convertedList.Add(item.ToString());
         }
-
-        return convertedUser;
+        return convertedList;
     }
 }

@@ -11,11 +11,25 @@ namespace Tourly.Services.UserServices;
 {
     private readonly string _path = PathHolder.UserFilesPath;
 
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
+    }
+
+    public void Delete(int id)
+
     private void EnsureFileExists()
     {
         var dir = Path.GetDirectoryName(_path);
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir!);
+
+        var users = text.ToUser();
+
+        var existUser = users.Find(u => u.Id == id)
+            ?? throw new Exception("User is not found.");
+
+        users.Remove(existUser);
+
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
 
         if (!File.Exists(_path))
             File.Create(_path).Close();
@@ -87,6 +101,10 @@ namespace Tourly.Services.UserServices;
             PhoneNumber = model.PhoneNumber,
             Password = model.Password
         };
+
+        users.Add(user);
+
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
 
         users.Add(newUser);
         SaveAllUsers(users);
@@ -165,6 +183,8 @@ namespace Tourly.Services.UserServices;
     {
         var users = LoadUsers();
         var result = string.IsNullOrWhiteSpace(search) ? users : Search(users, search);
+
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
 
         return result.Select(user => new UserViewModel
         {

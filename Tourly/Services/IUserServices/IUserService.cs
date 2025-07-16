@@ -1,4 +1,5 @@
 ﻿using Tourly.Models.UserModels;
+using Tourly.UserModels;
 
 namespace Tourly.IServices.IUserServices;
 public interface IUserService
