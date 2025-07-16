@@ -3,6 +3,7 @@ using Tourly.Domain;
 using Tourly.Extentions;
 using Tourly.Helpers;
 using Tourly.IServices.IUserServices;
+using Tourly.Models.UserModels;
 using Tourly.UserModels;
 
 namespace Tourly.Services.UserServices;
@@ -22,7 +23,7 @@ public class UserService : IUserService
 
         existUser.Password = newPassword;
 
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
     }
 
     public void Delete(int id)
@@ -36,7 +37,7 @@ public class UserService : IUserService
 
         users.Remove(existUser);
 
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
     }
 
     public UserViewModel Get(int id)
@@ -106,7 +107,7 @@ public class UserService : IUserService
 
         users.Add(user);
 
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
     }
 
     public int Login(UserLoginModel model)
@@ -146,7 +147,7 @@ public class UserService : IUserService
         existUser.LastName = model.LastName;
         existUser.PhoneNumber = model.PhoneNumber;
 
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
     }
 
     private List<User> Search(List<User> users, string search)
