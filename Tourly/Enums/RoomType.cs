@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tourly.Enums
 {
-    internal class RoomType
+    public class RoomType
     {
+
     }
 }
