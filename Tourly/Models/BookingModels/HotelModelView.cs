@@ -5,6 +5,6 @@ public class HotelModelView
     public string HotelDescription { get; set; }
     public string HotelStatus { get; set; }
     public decimal HotelPrice { get; set; }
-    public DateTime StartDate { get; set; } 
-    public DateTime EndDate { get; set; }
+    public DateOnly StartDate { get; set; } 
+    public DateOnly EndDate { get; set; }
 }

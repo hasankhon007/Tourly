@@ -1,16 +1,21 @@
-﻿using Tourly.Enums;
+﻿using Tourly.Constants;
+using Tourly.Enums;
+using Tourly.Helpers;
 namespace Tourly.BookingModels;
 public class Room
 {
-    public int Id { get; set; }
-    public byte RoomNumber { get; set; }       
+    public Room()
+    {
+        Id = GeneratorHelper.GenerateId(PathHolder.RoomsFilesPath);
+    }
+    public int Id { get; set; }    
     public RoomType RoomType { get; set; }               
     public RoomStatus Status { get; set; }       
     public decimal PricePerNight { get; set; }   
 
     public override string ToString()
     {
-        return $"{Id},{RoomNumber},{RoomType},{Status},{PricePerNight}";
+        return $"{Id},{RoomType},{Status},{PricePerNight}";
     }
     
 }

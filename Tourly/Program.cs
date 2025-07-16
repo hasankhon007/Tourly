@@ -1,13 +1,10 @@
-﻿using Tourly.Domain;
-using Tourly.Extentions;
-
-namespace Tourly
+﻿namespace Tourly
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            
+
         }
     }
 }
