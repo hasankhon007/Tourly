@@ -16,7 +16,11 @@ public class Hotel
     public string PhoneNumber { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
+<<<<<<< HEAD
     public byte StarsCount { get; set; } = 5;
+=======
+    public byte StarsCount { get; set; }
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
 
     public override string ToString()
     {

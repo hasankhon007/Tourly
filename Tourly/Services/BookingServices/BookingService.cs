@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Tourly.Constants;
 using Tourly.Domain;
 using Tourly.Extentions;
@@ -77,19 +78,55 @@ public class BookingService : IBookingService
     public bool CheckAvailability(Hotel hotel)
     {
 
+=======
+﻿using Tourly.BookingModels;
+using Tourly.Domain;
+using Tourly.IServices.IBookingServices;
+namespace Tourly.Services.BookingServices;
+public class BookingService : IBookingService
+{
+    public void BookHotel(HotelBookingModel hotelBookingModel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CalculateTotalPrizeOfBooking(HotelBookingModel hotelBookingModel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CancelBooking(HotelBookingModel hotelBookingModel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ChangeBooking(HotelBookingModel hotelBookingModel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool CheckAvailability(HotelBookingModel hotelBookingModel)
+    {
+        throw new NotImplementedException();
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     public List<HotelBookingModel> GetBookings()
     {
+<<<<<<< HEAD
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
 
         List<Booking> convertedBookings = text.ConvertTextToList();
 
 
+=======
+        throw new NotImplementedException();
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     public List<Hotel> SearchAllHotels(Hotel hotel, string search)
     {
+<<<<<<< HEAD
 
     }
 
@@ -102,5 +139,13 @@ public class BookingService : IBookingService
 
 
 
+=======
+        throw new NotImplementedException();
+    }
+
+    public HotelModelView View(Guid hotelId)
+    {
+        throw new NotImplementedException();
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 }
