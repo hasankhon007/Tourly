@@ -1,4 +1,5 @@
-﻿using Tourly.Constants;
+﻿using Tourly.BookingModels;
+using Tourly.Constants;
 using Tourly.Helpers;
 
 namespace Tourly.Domain;
@@ -19,6 +20,6 @@ public class Hotel
     public List<Room> Rooms { get; set; }
     public override string ToString()
     {
-        return $"{ID},{Name},{Location},{PhoneNumber},{Description}, {Price}";
+        return $"{ID},{Name},{Location},{PhoneNumber},{Description}, {StarsCount}";
     }
 }
