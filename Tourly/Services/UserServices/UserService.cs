@@ -3,170 +3,225 @@ using Tourly.Domain;
 using Tourly.Extentions;
 using Tourly.Helpers;
 using Tourly.IServices.IUserServices;
+using Tourly.Models.UserModels;
 using Tourly.UserModels;
 
 namespace Tourly.Services.UserServices;
-public class UserService : IUserService
+    public class UserService : IUserService
 {
-    public void ChangePassword(int userId, string oldPassword, string newPassword)
+    private readonly string _path = PathHolder.UserFilesPath;
+
+    private void EnsureFileExists()
     {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
+        var dir = Path.GetDirectoryName(_path);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir!);
 
-        var users = text.ToUser();
+        if (!File.Exists(_path))
+            File.Create(_path).Close();
+    }
 
-        var existUser = users.Find(u => u.Id == userId)
+    private void ValidateInput(
+        string firstName,
+        string lastName,
+        string country,
+        string phone,
+        string password)
+    {
+        if (string.IsNullOrWhiteSpace(firstName))
+            throw new ArgumentException("First name cannot be empty");
+
+        if (string.IsNullOrWhiteSpace(lastName))
+            throw new ArgumentException("Last name cannot be empty");
+
+        if (string.IsNullOrWhiteSpace(country))
+            throw new ArgumentException("Country cannot be empty");
+
+        if (!phone.StartsWith("+998") || phone.Length != 13)
+            throw new ArgumentException("Phone must start with +998 and be 13 characters long");
+
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 4)
+            throw new ArgumentException("Password must be at least 4 characters long");
+    }
+    private void UpdateUser(User updated, List<User> allUsers)
+    {
+        for (int i = 0; i < allUsers.Count; i++)
+        {
+            if (allUsers[i].Id == updated.Id)
+            {
+                allUsers[i] = updated;
+                break;
+            }
+        }
+
+        File.WriteAllText(_path, string.Empty);
+        foreach (var u in allUsers)
+            File.AppendAllText(_path, u.ToString() + "\n");
+    }
+
+    public void Register(UserRegisterModel model)
+    {
+        ValidateInput(
+            model.FirstName,
+            model.LastName,
+            model.Country,
+            model.PhoneNumber,
+            model.Password);
+        EnsureFileExists();
+
+        var users = LoadUsers();
+
+        var existUser = users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
+        if (existUser != null)
+        {
+            existUser.VisitCount++;
+            UpdateUser(existUser, users);
+            return;
+        }
+
+        var newUser = new User
+        {
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Country = model.Country,
+            PhoneNumber = model.PhoneNumber,
+            Password = model.Password
+        };
+
+        users.Add(newUser);
+        SaveAllUsers(users);
+    }
+
+    public int Login(UserLoginModel model)
+    {
+        var users = LoadUsers();
+        var user = users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber)
+            ?? throw new Exception("Phone or password is incorrect.");
+
+        if (user.Password != model.Password)
+            throw new Exception("Phone or password is incorrect.");
+
+        return user.Id;
+    }
+
+    public void ChangePassword(
+        int userId, 
+        string oldPassword, 
+        string newPassword)
+    {
+        var users = LoadUsers();
+        var user = users.FirstOrDefault(u => u.Id == userId)
             ?? throw new Exception("User is not found.");
 
-        if (existUser.Password != oldPassword)
+        if (user.Password != oldPassword)
             throw new Exception("Passwords do not match.");
 
-        existUser.Password = newPassword;
-
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+        user.Password = newPassword;
+        SaveAllUsers(users);
     }
 
     public void Delete(int id)
     {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
-
-        var users = text.ToUser();
-
-        var existUser = users.Find(u => u.Id == id)
+        var users = LoadUsers();
+        var user = users.FirstOrDefault(u => u.Id == id)
             ?? throw new Exception("User is not found.");
 
-        users.Remove(existUser);
+        users.Remove(user);
+        SaveAllUsers(users);
+    }
 
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+    public void Update(UserUpdateModel model)
+    {
+        var users = LoadUsers();
+        var user = users.FirstOrDefault(u => u.Id == model.Id)
+            ?? throw new Exception("User is not found.");
+
+        var duplicate = users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber && u.Id != model.Id);
+        if (duplicate != null)
+            throw new Exception("User with this phone already exists.");
+
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        user.PhoneNumber = model.PhoneNumber;
+
+        SaveAllUsers(users);
     }
 
     public UserViewModel Get(int id)
     {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
-
-        var users = text.ToUser();
-
-        var existUser = users.Find(u => u.Id == id)
+        var user = LoadUsers().FirstOrDefault(u => u.Id == id)
             ?? throw new Exception("User is not found.");
 
         return new UserViewModel()
         {
-            Id = existUser.Id,
-            FirstName = existUser.FirstName,
-            LastName = existUser.LastName,
-            PhoneNumber = existUser.PhoneNumber
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber
         };
     }
 
     public List<UserViewModel> GetAll(string search)
     {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
+        var users = LoadUsers();
+        var result = string.IsNullOrWhiteSpace(search) ? users : Search(users, search);
 
-        var users = text.ToUser();
-
-        var result = new List<UserViewModel>();
-
-        if (!string.IsNullOrEmpty(search))
+        return result.Select(user => new UserViewModel
         {
-            users = Search(users, search);
-        }
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber
+        }).ToList();
+    }
 
-        foreach (var user in users)
+    public bool IsVIPGuest(int userId)
+    {
+        var user = LoadUsers().FirstOrDefault(u => u.Id == userId);
+        return user != null && user.VisitCount >= 5;
+    }
+
+    private List<User> LoadUsers()
+    {
+        EnsureFileExists();
+        var lines = File.ReadAllLines(_path);
+        var users = new List<User>();
+
+        foreach (var line in lines)
         {
-            result.Add(new UserViewModel()
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            var parts = line.Split(',');
+            if (parts.Length != 7) continue;
+
+            users.Add(new User
             {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber
+                Id = int.Parse(parts[0]),
+                FirstName = parts[1],
+                LastName = parts[2],
+                Country = parts[3],
+                VisitCount = int.Parse(parts[4]),
+                PhoneNumber = parts[5],
+                Password = parts[6]
             });
         }
 
-        return result;
+        return users;
     }
-
-    public void Register(UserRegisterModel model)
+    private void SaveAllUsers(List<User> users)
     {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
-
-        var users = text.ToUser();
-
-        var existUser = users.Find(u => u.PhoneNumber == model.PhoneNumber);
-        if (existUser != null)
+        File.WriteAllText(_path, string.Empty);
+        foreach (var user in users)
         {
-            throw new Exception("User with this phone number already exists.");
+            File.AppendAllText(_path, user.ToString() + "\n");
         }
-
-        var user = new User
-        {
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            PhoneNumber = model.PhoneNumber,
-            Password = model.Password
-        };
-
-        users.Add(user);
-
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
     }
-
-    public int Login(UserLoginModel model)
-    {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
-
-        var users = text.ToUser();
-
-        var existUser = users.Find(u => u.PhoneNumber == model.PhoneNumber)
-            ?? throw new Exception("Phone or password is incorrect.");
-
-        if (existUser.Password != model.Password)
-        {
-            throw new Exception("Phone or password is incorrect.");
-        }
-
-        return existUser.Id;
-    }
-
-    public void Update(UserUpdateModel model)
-    {
-        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
-
-        var users = text.ToUser();
-
-        var existUser = users.Find(u => u.Id == model.Id)
-            ?? throw new Exception("User is not found.");
-
-        var alreadyExistUser = users.Find(u => u.PhoneNumber == model.PhoneNumber);
-
-        if (alreadyExistUser != null)
-        {
-            throw new Exception("User already exists with this phone number.");
-        }
-
-        existUser.FirstName = model.FirstName;
-        existUser.LastName = model.LastName;
-        existUser.PhoneNumber = model.PhoneNumber;
-
-        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
-    }
-
     private List<User> Search(List<User> users, string search)
     {
-        var result = new List<User>();
-
-        if (!string.IsNullOrEmpty(search))
-        {
-            foreach (var user in users)
-            {
-                if (
-                    user.FirstName.ToLower().Contains(search.ToLower()) ||
-                    user.LastName.ToLower().Contains(search.ToLower()) ||
-                    user.PhoneNumber.ToLower().Contains(search.ToLower()))
-                {
-                    result.Add(user);
-                }
-            }
-        }
-
-        return result;
+        return users.Where(user =>
+            user.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+            user.LastName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+            user.PhoneNumber.Contains(search, StringComparison.OrdinalIgnoreCase)
+        ).ToList();
     }
 }
+
