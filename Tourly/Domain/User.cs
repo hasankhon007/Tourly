@@ -1,8 +1,6 @@
 ﻿using Tourly.Constants;
 using Tourly.Helpers;
-
 namespace Tourly.Domain;
-
 public class User
 {
     public User()

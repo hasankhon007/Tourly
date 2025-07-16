@@ -1,7 +1,12 @@
 ﻿using Tourly.Models.UserModels;
+<<<<<<< HEAD
+
+namespace Tourly.Services.IUserServices;
+=======
 using Tourly.UserModels;
 
 namespace Tourly.IServices.IUserServices;
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
 public interface IUserService
 {
     void Register(UserRegisterModel model);

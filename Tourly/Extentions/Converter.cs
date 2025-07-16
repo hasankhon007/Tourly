@@ -1,11 +1,14 @@
-﻿using Tourly.BookingModels;
+﻿using Tourly.Constants;
 using Tourly.Domain;
+using Tourly.Helpers;
+using Tourly.Models.BookingModels;
 using Tourly.Enums;
-
+using Tourly.BookingModels;
 namespace Tourly.Extentions;
 
 public static class Converter
 {
+    #region ToModel
     public static List<T> Convert<T>(this string text)
     {
         List<T> items = new();
@@ -25,19 +28,19 @@ public static class Converter
                     Password = parts[4],
                 });
             }
-            else if(typeof(T) == typeof(Booking))
+            else if (typeof(T) == typeof(Booking))
             {
                 items.Add((T)(object)new Booking
                 {
-                     ID = int.Parse(parts[0]),
-                     UserId = int.Parse(parts[1]),
-                     HotelId = int.Parse(parts[2]),
-                     StartDate = DateOnly.Parse(parts[3]),
-                     EndDate = DateOnly.Parse(parts[4]),
-                     Price = decimal.Parse(parts[5]),
+                    ID = int.Parse(parts[0]),
+                    UserId = int.Parse(parts[1]),
+                    HotelId = int.Parse(parts[2]),
+                    StartDate = DateOnly.Parse(parts[3]),
+                    EndDate = DateOnly.Parse(parts[4]),
+                    Price = decimal.Parse(parts[5]),
                 });
             }
-            else if(typeof(T) == typeof(Hotel))
+            else if (typeof(T) == typeof(Hotel))
             {
                 items.Add((T)(object)new Hotel
                 {
@@ -49,7 +52,7 @@ public static class Converter
                     StarsCount = byte.Parse(parts[5]),
                 });
             }
-            else if(typeof(T) == typeof(Room))
+            else if (typeof(T) == typeof(Room))
             {
                 items.Add((T)(object)new Room
                 {
@@ -59,31 +62,11 @@ public static class Converter
                     PricePerNight = decimal.Parse(parts[3]),
                 });
             }
+            
         }
         return items;
     }
-    public static List<User> ToUser(this string text)
-    {
-        List<User> users = new();
-
-        string[] lines = text.Split('\n');
-
-        foreach (string line in lines)
-        {
-            if (string.IsNullOrWhiteSpace(line)) continue;
-
-            string[] parts = line.Split(',');
-
-            users.Add(new User
-            {
-                Id = int.Parse(parts[0]),
-                FirstName = parts[1],
-                LastName = parts[2],
-                PhoneNumber = parts[3],
-                Password = parts[4],
-            });
-        }
-
-        return users;
-    }
+    #endregion
 }
+
+

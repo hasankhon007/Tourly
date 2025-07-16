@@ -1,14 +1,15 @@
-﻿using Tourly.BookingModels;
+using Tourly.BookingModels;
 using Tourly.Domain;
-namespace Tourly.IServices.IBookingServices;
+using Tourly.Enums;
+using Tourly.Models.BookingModels;
+namespace Tourly.Services.IBookingServices;
 public interface IBookingService
 {
-    List<Hotel> SearchAllHotels(Hotel hotel, string search);
-    void BookHotel(HotelBookingModel hotelBookingModel);
-    void CancelBooking(HotelBookingModel hotelBookingModel);
-    List<HotelBookingModel> GetBookings();
-    void ChangeBooking(HotelBookingModel hotelBookingModel);
-    HotelModelView View(Guid hotelId);
-    bool CheckAvailability(HotelBookingModel hotelBookingModel);
-    void CalculateTotalPrizeOfBooking(HotelBookingModel hotelBookingModel);
+    List<HotelModelView> SearchAllHotels(List<Hotel> hotels, string? search);
+    Booking? BookRoom(int userId, Hotel hotel, RoomType desiredType, DateOnly start, DateOnly end);
+    void CancelBooking(int bookingId);
+    bool IsRoomAvailable(Hotel hotel, Room room, DateOnly start, DateOnly end);
+    HotelModelView View(int hotelId);
+    List<HotelBookingModel> GetBookings(int userId);
+    void ChangeBooking(HotelBookingModel updatedBooking); 
 }

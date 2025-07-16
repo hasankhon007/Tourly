@@ -1,5 +1,4 @@
-﻿namespace Tourly.UserModels;
-
+﻿namespace Tourly.Models.UserModels;
 public class UserUpdateModel
 {
     public int Id { get; set; }

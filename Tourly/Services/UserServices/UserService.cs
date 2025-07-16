@@ -2,9 +2,14 @@
 using Tourly.Domain;
 using Tourly.Extentions;
 using Tourly.Helpers;
+<<<<<<< HEAD
+using Tourly.Models.UserModels;
+using Tourly.Services.IUserServices;
+=======
 using Tourly.IServices.IUserServices;
 using Tourly.Models.UserModels;
 using Tourly.UserModels;
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
 
 namespace Tourly.Services.UserServices;
 public class UserService : IUserService
@@ -23,7 +28,11 @@ public class UserService : IUserService
 
         existUser.Password = newPassword;
 
+<<<<<<< HEAD
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+=======
         FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     public void Delete(int id)
@@ -37,7 +46,11 @@ public class UserService : IUserService
 
         users.Remove(existUser);
 
+<<<<<<< HEAD
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+=======
         FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     public UserViewModel Get(int id)
@@ -107,7 +120,11 @@ public class UserService : IUserService
 
         users.Add(user);
 
+<<<<<<< HEAD
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+=======
         FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     public int Login(UserLoginModel model)
@@ -147,7 +164,11 @@ public class UserService : IUserService
         existUser.LastName = model.LastName;
         existUser.PhoneNumber = model.PhoneNumber;
 
+<<<<<<< HEAD
+        FileHelper.WriteToFile(PathHolder.UserFilesPath, users.ConvertToString());
+=======
         FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
     }
 
     private List<User> Search(List<User> users, string search)
@@ -171,4 +192,7 @@ public class UserService : IUserService
         return result;
     }
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf

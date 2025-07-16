@@ -1,5 +1,4 @@
 ﻿namespace Tourly.Constants;
-
 public class PathHolder
 {
     private static readonly string parentRoot = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;

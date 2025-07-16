@@ -1,4 +1,5 @@
-﻿using Tourly.Domain;
+﻿using Tourly.BookingModels;
+using Tourly.Domain;
 
 namespace Tourly.Extentions;
 
@@ -10,6 +11,26 @@ public static class CollectionExtentions
         foreach (var item in list)
         {
             convertedList.Add(item.ToString());
+        }
+        return convertedList;
+    }
+
+    public static List<HotelBookingModel> ConvertTo(this List<Booking> list)
+    {
+        var convertedList = new List<HotelBookingModel>();
+
+        foreach (var item in list)
+        {
+            convertedList.Add(new HotelBookingModel
+            {
+                UserId = item.UserId,
+                HotelId = item.HotelId,
+                HotelName = item.HotelName,
+                RoomId = item.RoomId,
+                RoomType = item.RoomType,
+                StartDate = item.StartDate,
+                EndDate = item.EndDate
+            });
         }
         return convertedList;
     }

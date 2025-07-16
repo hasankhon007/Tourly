@@ -1,5 +1,4 @@
-﻿namespace Tourly.UserModels;
-
+﻿namespace Tourly.Models.UserModels;
 public class UserRegisterModel
 {
     public string FirstName { get; set; }
