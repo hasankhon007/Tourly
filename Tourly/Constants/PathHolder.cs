@@ -5,4 +5,5 @@ public class PathHolder
     public static readonly string UserFilesPath = Path.Combine(parentRoot,"Data", "users.txt");
     public static readonly string HotelsFilesPath = Path.Combine(parentRoot, "Data", "hotels.txt");
     public static readonly string BookingFilesPath = Path.Combine(parentRoot, "Data", "bokkings.txt");
+    public static readonly string RoomsFilesPath = Path.Combine(parentRoot, "Data", "rooms.txt");
 }

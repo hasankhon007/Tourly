@@ -1,6 +1,7 @@
-<<<<<<< HEAD
-﻿using Tourly.Constants;
+using Tourly.BookingModels;
+using Tourly.Constants;
 using Tourly.Domain;
+using Tourly.Enums;
 using Tourly.Extentions;
 using Tourly.Helpers;
 using Tourly.Models.BookingModels;
@@ -13,49 +14,51 @@ public class BookingService : IBookingService
     private HotelBookingModel hotelBookingModel;
     private HotelModelView hotelModelView;
     private int _bookingId;
-    public BookingService(HotelBookingModel hotelBookingModel, HotelModelView hotelModelView, UserService userService)
+    public BookingService(HotelBookingModel hotelBookingModel, HotelModelView hotelModelView)
     {
         this.hotelBookingModel = hotelBookingModel;
         this.hotelModelView = hotelModelView;
-        this.userServices = userService;
     }
 
-    #region Booking Hotel
-    public void BookHotel(Hotel hotelBookingModel, int userId)
+    public Booking? BookRoom(int userId, Hotel hotel, RoomType desiredType, DateOnly start, DateOnly end)
     {
-        string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+        var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+        var _bookings = text.Convert<Booking>();
 
-        List<Booking> bookings = new List<Booking>();
-        bookings = text.ConvertTextToList();
+        var availableRoom = hotel.Rooms.FirstOrDefault(r =>
+            r.RoomType == desiredType &&
+            IsRoomAvailable(hotel, r, start, end));
 
-        Booking newBooking = new Booking
+        if (availableRoom == null)
+        {
+            Console.WriteLine("No available rooms found for the selected dates.");
+            return null;
+        }
+
+        var nights = end.DayNumber - start.DayNumber;
+        var totalPrice = nights * availableRoom.PricePerNight;
+
+        var booking = new Booking
         {
             UserId = userId,
-            HotelId = hotelBookingModel.ID,
-            BookingHotelName = hotelBookingModel.Name,
-            BookingHotelAddress = hotelBookingModel.Location,
-            Price = hotelBookingModel.Price,
-            StartDate = hotelBookingModel.StartDate,
-            EndDate = hotelBookingModel.EndDate,
+            HotelId = hotel.ID,
+            StartDate = start,
+            EndDate = end,
+            Price = totalPrice
         };
 
-        bookings.Add(newBooking);
+        _bookings.Add(booking);
 
-        FileHelper.WriteToFile(PathHolder.BookingFilesPath, bookings.ConvertToString());
-    }
-    #endregion
-
-    public void CalculateTotalPrizeOfBooking(HotelBookingModel hotelBookingModel)
-    {
-
+        FileHelper.WriteToFile(PathHolder.BookingFilesPath, _bookings.Convert());
+        return booking;
     }
 
-    #region Cancelling Booking
+
     public void CancelBooking(int bookingId)
     {
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
 
-        List<Booking> convertedBookings = text.ConvertTextToList();
+        List<Booking> convertedBookings = text.Convert<Booking>();
 
         var existBooking = convertedBookings.Find(x => x.ID == bookingId);
 
@@ -66,86 +69,96 @@ public class BookingService : IBookingService
 
         convertedBookings.Remove(existBooking);
 
-        File.WriteAllLines(PathHolder.BookingFilesPath, convertedBookings.ConvertToString());
-    }
-    #endregion
-
-    public void ChangeBooking(HotelBookingModel hotelBookingModel)
-    {
-
+        File.WriteAllLines(PathHolder.BookingFilesPath, convertedBookings.Convert());
     }
 
-    public bool CheckAvailability(Hotel hotel)
+    public bool IsRoomAvailable(Hotel hotel, Room room, DateOnly start, DateOnly end)
     {
+        var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+        var _bookings = text.Convert<Booking>();
 
-=======
-﻿using Tourly.BookingModels;
-using Tourly.Domain;
-using Tourly.IServices.IBookingServices;
-namespace Tourly.Services.BookingServices;
-public class BookingService : IBookingService
-{
-    public void BookHotel(HotelBookingModel hotelBookingModel)
-    {
-        throw new NotImplementedException();
+        return !_bookings.Any(b =>
+            b.HotelId == hotel.ID &&
+            !(end <= b.StartDate || start >= b.EndDate));
     }
 
-    public void CalculateTotalPrizeOfBooking(HotelBookingModel hotelBookingModel)
+    public List<HotelBookingModel> GetBookings(int userId)
     {
-        throw new NotImplementedException();
-    }
-
-    public void CancelBooking(HotelBookingModel hotelBookingModel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ChangeBooking(HotelBookingModel hotelBookingModel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool CheckAvailability(HotelBookingModel hotelBookingModel)
-    {
-        throw new NotImplementedException();
->>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
-    }
-
-    public List<HotelBookingModel> GetBookings()
-    {
-<<<<<<< HEAD
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
 
-        List<Booking> convertedBookings = text.ConvertTextToList();
+        List<Booking> userBookings = text.Convert<Booking>();
 
+        foreach (var item in userBookings)
+        {
 
-=======
-        throw new NotImplementedException();
->>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
+            var hotelViewModel = userBookings.Find(item => item.UserId == userId);
+
+            if (hotelViewModel == null)
+            {
+                throw new Exception("Booking is not available");
+            }
+            userBookings.Add(item);
+        }
+
+        return userBookings.ConvertTo();
     }
 
-    public List<Hotel> SearchAllHotels(Hotel hotel, string search)
-    {
-<<<<<<< HEAD
-
-    }
-
-    // bookinglarni ko'rish
-    public HotelModelView View(Hotel hotel ,int hotelId)
+    public HotelModelView View(int hotelId)
     {
         string fileInfo = FileHelper.ReadFromFile(PathHolder.HotelsFilesPath);
 
-        List<Hotel> hotels = fileInfo.ConvertTextToList();
+        List<Hotel> hotels = fileInfo.Convert<Hotel>();
 
+        HotelModelView hotelModelView = new HotelModelView();
 
-
-=======
-        throw new NotImplementedException();
+        foreach (var item in hotels)
+        {
+            if (item.ID == hotelId)
+            {
+                hotelModelView.HotelName = item.Name;
+                hotelModelView.Location = item.Location;
+                hotelModelView.HotelDescription = item.Description;
+            }
+        }
+        return hotelModelView;
     }
 
-    public HotelModelView View(Guid hotelId)
+    public void ChangeBooking(HotelBookingModel updatedBooking)
     {
-        throw new NotImplementedException();
->>>>>>> da2b102d3baeae39fa678fc9dee539ca1b74efbf
+        var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
+        var _bookings = text.Convert<Booking>();
+
+        var existingBooking = _bookings.FirstOrDefault(b =>
+            b.UserId == updatedBooking.UserId &&
+            b.RoomId == updatedBooking.RoomId &&
+            b.HotelId == updatedBooking.HotelId);
+
+        if (existingBooking == null)
+        {
+            throw new Exception("It i   s not booked yet");
+        }
+        existingBooking.RoomType = updatedBooking.RoomType;
+        existingBooking.HotelName = updatedBooking.HotelName;
+        existingBooking.StartDate = updatedBooking.StartDate;
+        existingBooking.EndDate = updatedBooking.EndDate;
+    }
+    public List<HotelModelView> SearchAllHotels(List<Hotel> hotels, string? search)
+    {
+        List<HotelModelView> result = new List<HotelModelView>();
+
+        foreach (var item in hotels)
+        {
+            if (string.IsNullOrWhiteSpace(search) ||
+                item.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                item.Location.Contains(search, StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(new HotelModelView
+                {
+                    HotelName = item.Name,
+                    Location = item.Location,
+                });
+            }
+        }
+        return result;
     }
 }
