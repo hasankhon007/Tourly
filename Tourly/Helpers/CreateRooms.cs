@@ -1,4 +1,5 @@
 ﻿using Tourly.BookingModels;
+using Tourly.Domain;
 using Tourly.Enums;
 
 namespace Tourly.Helpers;
