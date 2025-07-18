@@ -1,5 +1,3 @@
-﻿
-using Tourly.TelegramBot;
 
 namespace Tourly
 {
@@ -7,8 +5,6 @@ namespace Tourly
     {
         static async Task Main(string[] args)
         {
-            TelegramBotAdmin botAdmin = new TelegramBotAdmin();
-            await botAdmin.StartAsync();
         }
     }
 }

@@ -6,20 +6,9 @@ using Tourly.Extentions;
 using Tourly.Helpers;
 using Tourly.Models.BookingModels;
 using Tourly.Services.IBookingServices;
-using Tourly.Services.UserServices;
 namespace Tourly.Services.BookingServices;
 public class BookingService : IBookingService
 {
-    private UserService userServices;
-    private HotelBookingModel hotelBookingModel;
-    private HotelModelView hotelModelView;
-    private int _bookingId;
-    public BookingService(HotelBookingModel hotelBookingModel, HotelModelView hotelModelView)
-    {
-        this.hotelBookingModel = hotelBookingModel;
-        this.hotelModelView = hotelModelView;
-    }
-
     public Booking? BookRoom(int userId, Hotel hotel, RoomType desiredType, DateOnly start, DateOnly end)
     {
         var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
@@ -52,8 +41,6 @@ public class BookingService : IBookingService
         FileHelper.WriteToFile(PathHolder.BookingFilesPath, _bookings.Convert());
         return booking;
     }
-
-
     public void CancelBooking(int bookingId)
     {
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
@@ -66,12 +53,10 @@ public class BookingService : IBookingService
         {
             throw new Exception("Booking was not found");
         }
-
         convertedBookings.Remove(existBooking);
 
         File.WriteAllLines(PathHolder.BookingFilesPath, convertedBookings.Convert());
     }
-
     public bool IsRoomAvailable(Hotel hotel, Room room, DateOnly start, DateOnly end)
     {
         var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
@@ -81,7 +66,6 @@ public class BookingService : IBookingService
             b.HotelId == hotel.ID &&
             !(end <= b.StartDate || start >= b.EndDate));
     }
-
     public List<HotelBookingModel> GetBookings(int userId)
     {
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
@@ -90,7 +74,6 @@ public class BookingService : IBookingService
 
         foreach (var item in userBookings)
         {
-
             var hotelViewModel = userBookings.Find(item => item.UserId == userId);
 
             if (hotelViewModel == null)
@@ -99,10 +82,8 @@ public class BookingService : IBookingService
             }
             userBookings.Add(item);
         }
-
         return userBookings.ConvertTo();
     }
-
     public HotelModelView View(int hotelId)
     {
         string fileInfo = FileHelper.ReadFromFile(PathHolder.HotelsFilesPath);
@@ -122,7 +103,6 @@ public class BookingService : IBookingService
         }
         return hotelModelView;
     }
-
     public void ChangeBooking(HotelBookingModel updatedBooking)
     {
         var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
