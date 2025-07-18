@@ -1,13 +1,10 @@
-﻿using Tourly.Menu.UserPanel;
 
 namespace Tourly
 {
-    internal class Program
+    class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var userPanel = new UserPanel();
-            userPanel.Start();
         }
     }
 }
