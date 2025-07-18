@@ -57,9 +57,10 @@ public static class Converter
                 items.Add((T)(object)new Room
                 {
                     Id = int.Parse(parts[0]),
-                    RoomType = (RoomType)Enum.Parse(typeof(RoomType), parts[1]),
-                    Status = Enum.Parse<RoomStatus>(parts[2]),
-                    PricePerNight = decimal.Parse(parts[3]),
+                    HotelId = int.Parse(parts[1]),
+                    RoomType = (RoomType)Enum.Parse(typeof(RoomType), parts[2]),
+                    Status = Enum.Parse<RoomStatus>(parts[3]),
+                    PricePerNight = decimal.Parse(parts[4]),
                 });
             }
             
