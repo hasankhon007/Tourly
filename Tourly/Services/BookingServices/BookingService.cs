@@ -70,39 +70,56 @@ public class BookingService : IBookingService
     {
         string text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
 
-        List<Booking> userBookings = text.Convert<Booking>();
+        List<Booking> allBookings = text.Convert<Booking>();
 
-        foreach (var item in userBookings)
-        {
-            var hotelViewModel = userBookings.Find(item => item.UserId == userId);
+        // Faqat foydalanuvchining bookinglari
+        List<Booking> userBookings = allBookings
+            .Where(b => b.UserId == userId)
+            .ToList();
 
-            if (hotelViewModel == null)
-            {
-                throw new Exception("Booking is not available");
-            }
-            userBookings.Add(item);
-        }
+        if (!userBookings.Any())
+            throw new Exception("Sizda hech qanday bron topilmadi.");
+
         return userBookings.ConvertTo();
     }
+
+    //public HotelModelView View(int hotelId)
+    //{
+    //    string fileInfo = FileHelper.ReadFromFile(PathHolder.HotelsFilesPath);
+
+    //    List<Hotel> hotels = fileInfo.Convert<Hotel>();
+
+    //    HotelModelView hotelModelView = new HotelModelView();
+
+    //    foreach (var item in hotels)
+    //    {
+    //        if (item.ID == hotelId)
+    //        {
+    //            hotelModelView.HotelName = item.Name;
+    //            hotelModelView.Location = item.Location;
+    //            hotelModelView.HotelDescription = item.Description;
+    //        }
+    //    }
+    //    return hotelModelView;
+    //}
+
     public HotelModelView View(int hotelId)
     {
-        string fileInfo = FileHelper.ReadFromFile(PathHolder.HotelsFilesPath);
+        var hotels = FileHelper.ReadFromFile(PathHolder.HotelsFilesPath).Convert<Hotel>();
 
-        List<Hotel> hotels = fileInfo.Convert<Hotel>();
+        var hotel = hotels.FirstOrDefault(h => h.ID == hotelId);
 
-        HotelModelView hotelModelView = new HotelModelView();
+        if (hotel == null)
+            throw new Exception("Hotel topilmadi.");
 
-        foreach (var item in hotels)
+        return new HotelModelView
         {
-            if (item.ID == hotelId)
-            {
-                hotelModelView.HotelName = item.Name;
-                hotelModelView.Location = item.Location;
-                hotelModelView.HotelDescription = item.Description;
-            }
-        }
-        return hotelModelView;
+            HotelName = hotel.Name,
+            Location = hotel.Location,
+            HotelDescription = hotel.Description
+        };
     }
+
     public void ChangeBooking(HotelBookingModel updatedBooking)
     {
         var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
@@ -115,7 +132,7 @@ public class BookingService : IBookingService
 
         if (existingBooking == null)
         {
-            throw new Exception("It i   s not booked yet");
+            throw new Exception("It is not booked yet");
         }
         existingBooking.RoomType = updatedBooking.RoomType;
         existingBooking.HotelName = updatedBooking.HotelName;

@@ -172,5 +172,87 @@ public class UserService : IUserService
 
         return result;
     }
+
+    public async Task SaveToFileAsync(UserRegisterModel user)
+    {
+        user.Id = await GetNextUserIdAsync();
+        var line = $"{user.Id},{user.FirstName},{user.LastName},{user.PhoneNumber},{user.Password}";
+        await File.AppendAllTextAsync(PathHolder.UserFilesPath, line + Environment.NewLine);
+    }
+
+    private async Task<int> GetNextUserIdAsync()
+    {
+        if (!File.Exists(PathHolder.UserFilesPath))
+            return 1;
+
+        var lines = await File.ReadAllLinesAsync(PathHolder.UserFilesPath);
+        if (lines.Length == 0)
+            return 1;
+
+        var lastLine = lines.Last();
+        var lastId = int.Parse(lastLine.Split(',')[0]);
+        return lastId + 1;
+    }
+
+    public async Task<List<UserRegisterModel>> GetAllUsersAsync()
+    {
+        var users = new List<UserRegisterModel>();
+
+        if (!File.Exists(PathHolder.UserFilesPath)) return users;
+
+        var lines = await File.ReadAllLinesAsync(PathHolder.UserFilesPath);
+        foreach (var line in lines)
+        {
+            var parts = line.Split(',');
+            if (parts.Length < 5) continue;
+
+            users.Add(new UserRegisterModel
+            {
+                Id = int.Parse(parts[0]),
+                FirstName = parts[1],
+                LastName = parts[2],
+                PhoneNumber = parts[3],
+                Password = parts[4]
+            });
+        }
+
+        return users;
+    }
+
+    public async Task<UserRegisterModel?> LoginAsync(string phone, string password)
+    {
+        if (!File.Exists(PathHolder.UserFilesPath))
+            return null;
+
+        string[] lines = await File.ReadAllLinesAsync(PathHolder.UserFilesPath);
+
+        foreach (string line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            string[] parts = line.Split(',');
+
+            if (parts.Length >= 5)
+            {
+                string filePhone = parts[3].Trim();
+                string filePassword = parts[4].Trim();
+
+                if (filePhone == phone && filePassword == password)
+                {
+                    return new UserRegisterModel
+                    {
+                        Id = int.Parse(parts[0]),
+                        FirstName = parts[1],
+                        LastName = parts[2],
+                        PhoneNumber = filePhone,
+                        Password = filePassword
+                    };
+                }
+            }
+        }
+
+        return null;
+    }
+
 }
 
