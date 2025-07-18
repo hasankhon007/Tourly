@@ -13,8 +13,9 @@ public class BookingService : IBookingService
     {
         var text = FileHelper.ReadFromFile(PathHolder.BookingFilesPath);
         var _bookings = text.Convert<Booking>();
+        var rooms = FileHelper.ReadFromFile(PathHolder.RoomsFilesPath).Convert<Room>().Where(x => x.HotelId == hotel.ID);
 
-        var availableRoom = hotel.Rooms.FirstOrDefault(r =>
+        var availableRoom = rooms.FirstOrDefault(r =>
             r.RoomType == desiredType &&
             IsRoomAvailable(hotel, r, start, end));
 
