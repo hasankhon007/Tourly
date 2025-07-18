@@ -26,7 +26,7 @@ public class HotelService : IHotelService
             throw new Exception($"Hotel with this name <{hotelCreateModel.Name}> already exists");
         }
 
-        if (!string.IsNullOrEmpty(hotelCreateModel.PhoneNumber))
+        if (string.IsNullOrEmpty(hotelCreateModel.PhoneNumber))
         {
             throw new Exception("Phone should not be null or empty");
         }
@@ -69,14 +69,14 @@ public class HotelService : IHotelService
             throw new Exception($"Stadium already exists with this name = {model.Name}");
         }
 
-        if (!string.IsNullOrEmpty(model.PhoneNumber))
+        if (string.IsNullOrEmpty(model.PhoneNumber))
         {
             throw new Exception("Phone should not be null or empty");
         }
 
-        if (model.PhoneNumber.Length != 12)
+        if (model.PhoneNumber.Length != 13)
         {
-            throw new Exception("Phone number should be 12 characters");
+            throw new Exception("Phone number should be 13 characters");
         }
 
         if (!model.PhoneNumber.StartsWith("+998"))

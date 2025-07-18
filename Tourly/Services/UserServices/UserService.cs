@@ -152,6 +152,14 @@ public class UserService : IUserService
         FileHelper.WriteToFile(PathHolder.UserFilesPath, users.Convert());
     }
 
+    public List<User> GetALLforAdmin()
+    {
+        var text = FileHelper.ReadFromFile(PathHolder.UserFilesPath);
+        var users = text.Convert<User>();
+        
+        return users; // Assuming you want to return the first user for admin purposes
+    }
+
     private List<User> Search(List<User> users, string search)
     {
         var result = new List<User>();
