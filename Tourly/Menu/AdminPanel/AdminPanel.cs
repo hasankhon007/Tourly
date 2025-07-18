@@ -4,8 +4,10 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Tourly.Constants;
 using Tourly.Domain;
 using Tourly.Enums;
+using Tourly.Extentions;
 using Tourly.Helpers;
 using Tourly.Models.HotelModels;
 using Tourly.Services.HotelService;
@@ -225,11 +227,11 @@ public class TelegramBotAdmin
                 case 5:
                     var counts = message.Split(',').Select(int.Parse).ToList();
                     var rooms = new List<Room>();
-                    rooms.AddRange(RoomType.Single.Create(counts[0]));
-                    rooms.AddRange(RoomType.Double.Create(counts[1]));
-                    rooms.AddRange(RoomType.Family.Create(counts[2]));
-                    rooms.AddRange(RoomType.Deluxe.Create(counts[3]));
-                    rooms.AddRange(RoomType.VIP.Create(counts[4]));
+                    rooms.AddRange(RoomType.Single.Create(counts[0], GeneratorHelper.GenerateId(PathHolder.HotelsFilesPath)));
+                    rooms.AddRange(RoomType.Double.Create(counts[1], GeneratorHelper.GenerateId(PathHolder.HotelsFilesPath)));
+                    rooms.AddRange(RoomType.Family.Create(counts[2], GeneratorHelper.GenerateId(PathHolder.HotelsFilesPath)));
+                    rooms.AddRange(RoomType.Deluxe.Create(counts[3], GeneratorHelper.GenerateId(PathHolder.HotelsFilesPath)));
+                    rooms.AddRange(RoomType.VIP.Create(counts[4], GeneratorHelper.GenerateId(PathHolder.HotelsFilesPath)));
                     model.Rooms = rooms;
 
                     hotelService.Create(model);
@@ -275,10 +277,14 @@ public class TelegramBotAdmin
 
         foreach (var hotel in hotels)
         {
+            var rooms = FileHelper.ReadFromFile(PathHolder.RoomsFilesPath).Convert<Room>()
+                .Where(r => r.HotelId == hotel.ID)
+                .ToList();
             string hotelInfo = $"🏨 *{hotel.Name}*\n" +
                                $"📍 Location: {hotel.Location}\n" +
                                $"📞 Phone: {hotel.PhoneNumber}\n" +
-                               $"⭐ Stars: {hotel.StarsCount}\n";
+                               $"⭐  Stars: {hotel.StarsCount}\n" +
+                               $"   Room Count: {rooms.Count}";
 
             var photoUrl = GetRandomHotelImage();
 
