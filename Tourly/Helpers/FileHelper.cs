@@ -16,4 +16,25 @@ public class FileHelper
     {
         File.WriteAllLines(filePath, content);
     }
+
+    public static async Task<string> ReadFromFileAsync(string path)
+    {
+        if (!File.Exists(path))
+            return string.Empty;
+
+        using StreamReader reader = new StreamReader(path);
+        return await reader.ReadToEndAsync();
+    }
+
+    public static async Task WriteToFileAsync(string path, string content)
+    {
+        using StreamWriter writer = new StreamWriter(path, append: true);
+        await writer.WriteLineAsync(content);
+    }
+
+    public static async Task OverwriteFileAsync(string path, string content)
+    {
+        using StreamWriter writer = new StreamWriter(path, append: false);
+        await writer.WriteAsync(content);
+    }
 }
