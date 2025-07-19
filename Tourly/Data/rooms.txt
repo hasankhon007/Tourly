@@ -1,0 +1,17 @@
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+1,1,Single,Available,50
+2,1,Double,Available,100
+2,1,Double,Available,100
+2,1,Double,Available,100
+3,1,Family,Available,150
+3,1,Family,Available,150
+4,1,Deluxe,Available,180
+5,1,VIP,Available,200
