@@ -34,7 +34,7 @@ public class TelegramBotAdmin
 
 
     private TelegramBotClient botClient;
-     
+
     public TelegramBotAdmin()
     {
         botClient = new TelegramBotClient("7782728604:AAFNSPq7xVq5qcyEoWuUWyrqeZFDKTyotdQ");
@@ -42,6 +42,7 @@ public class TelegramBotAdmin
         hotelService = new HotelService();
     }
     public async Task StartAsync()
+
     {
         using var cts = new CancellationTokenSource();
 
@@ -79,6 +80,9 @@ public class TelegramBotAdmin
     {
         if (update.Type == UpdateType.CallbackQuery)
         {
+
+            await HandleCallbackQueryAsync(update.CallbackQuery, cancellation);
+
             await HandleCallbackQueryAsync(update.CallbackQuery,cancellation);
             return;
         }
@@ -157,7 +161,6 @@ public class TelegramBotAdmin
                 }
                 break;
         }
-        
     }
     private async Task HandleCallbackQueryAsync(CallbackQuery callbackQuery, CancellationToken token)
     {
@@ -362,8 +365,6 @@ public class TelegramBotAdmin
             InlineKeyboardButton.WithCallbackData($"{hotel.Name} ({hotel.ID})", $"delete_hotel:{hotel.ID}")
         });
         }
-
-        
 
         await botClient.SendMessage(
             chatId: chatId,
