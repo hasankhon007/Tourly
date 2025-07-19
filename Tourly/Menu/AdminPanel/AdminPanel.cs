@@ -86,9 +86,10 @@ public class TelegramBotAdmin
 
         var chatId = update.Message.Chat.Id;
         var message = update.Message.Text;
+
         if (hotelUpdateSteps.ContainsKey(chatId))
         {
-            await HandleUpdateHotelSteps(chatId,message);
+            await HandleUpdateHotelSteps(chatId, message);
             return;
         }
         // Step-by-step Add Hotel
@@ -97,7 +98,6 @@ public class TelegramBotAdmin
             await HandleAddHotelSteps(chatId, message, botClient);
             return;
         }
-
         switch (message)
         {
             case "/start":
@@ -157,6 +157,7 @@ public class TelegramBotAdmin
                 }
                 break;
         }
+        
     }
     private async Task HandleCallbackQueryAsync(CallbackQuery callbackQuery, CancellationToken token)
     {
