@@ -10,5 +10,6 @@ public class HotelCreateModel
     public string PhoneNumber { get; set; }
     public string Description { get; set; }
     public byte StarsCount { get; set; }
-    public List<Room> Rooms { get; set; }
+    public List<Room>? Rooms { get; set; }
+
 }
